@@ -22,7 +22,9 @@ class Expense:
         amount: float,
         note: str = "",
         currency: str = "BDT",
-        expense_id: Optional[str] = None
+        expense_id: Optional[str] = None,
+        created_at: Optional[str] = None
+
     ):
         """
         Initialize an Expense instance.
@@ -44,6 +46,8 @@ class Expense:
         self.note = note
         self.currency = currency
         self.id = expense_id if expense_id else self._generate_id()
+        self.created_at = created_at if created_at else self._generate_created_at()
+
     
     def _validate_date(self, date: str) -> str:
         """
@@ -129,8 +133,9 @@ class Expense:
             "date": self.date,
             "category": self.category,
             "amount": self.amount,
+            "currency": self.currency,
             "note": self.note,
-            "currency": self.currency
+            "created_at": self.created_at
         }
     
     @classmethod
@@ -150,13 +155,20 @@ class Expense:
             amount=data["amount"],
             note=data.get("note", ""),
             currency=data.get("currency", "BDT"),
-            expense_id=data.get("id")
+            expense_id=data.get("id"),
+            created_at=data.get("created_at")
         )
     
+    
+
+    def _generate_created_at(self) -> str:
+        """Generate creation timestamp in ISO format."""
+        return datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
+    
+
+
     def __str__(self) -> str:
         """String representation for display."""
-        return f"{self.id} | {self.date} | {self.category} | {self.amount:.2f} {self.currency} | {self.note}"
+        return f"{self.id} | {self.date} | {self.category} | {self.amount:.2f} {self.currency} | {self.note} | {self.created_at}"
     
-    def __repr__(self) -> str:
-        """Developer-friendly representation."""
-        return f"Expense(id={self.id}, date={self.date}, category={self.category}, amount={self.amount})"
