@@ -1,3 +1,19 @@
 env 
 
 test_models.py
+
+tracker/__pycache__
+
+test_storage.py 
+
+test_logger.py 
+
+test_service.py 
+
+test_data
+
+test_data_service
+
+data/expenses.json
+
+logs/tracker.log

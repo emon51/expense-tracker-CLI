@@ -34,8 +34,8 @@ def create_parser():
     list_parser.add_argument('--min', type=float, dest='min_amount', help='Minimum amount')
     list_parser.add_argument('--max', type=float, dest='max_amount', help='Maximum amount')
     list_parser.add_argument('--sort', type=str, choices=['date', 'amount', 'category'], help='Sort by field')
-    list_parser.add_argument('--desc', action='store_true', help='Sort in descending order')
-    list_parser.add_argument('--limit', type=int, help='Limit number of results')
+    list_parser.add_argument('--desc', '-desc', action='store_true', help='Sort in descending order')
+    list_parser.add_argument('--limit', '-limit', type=int, help='Limit number of results')
     
     # Summary command
     summary_parser = subparsers.add_parser('summary', help='Generate expense summary')
@@ -205,10 +205,7 @@ def run():
             handle_delete(service, args)
         elif args.command == 'edit':
             handle_edit(service, args)
-    except ValueError as e:
-        print(f"Error: {e}")
-        log_validation_error("command", args.command, str(e))
-        sys.exit(1)
+            
     except Exception as e:
         print(f"Error: {e}")
         log_error("CommandError", str(e))
