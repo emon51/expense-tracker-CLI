@@ -1,6 +1,6 @@
 """
 Storage layer for expense tracker application.
-Handles reading/writing expenses to JSON file.
+Handles reading/writing expenses to JSON file with version control.
 """
 
 import json
@@ -13,6 +13,8 @@ class ExpenseStorage:
     """
     Handles persistent storage of expenses in JSON format.
     """
+    
+    VERSION = 1  # JSON schema version
     
     def __init__(self, data_dir: str = "data", filename: str = "expenses.json"):
         """
@@ -36,7 +38,7 @@ class ExpenseStorage:
         """Create empty expenses file if it doesn't exist."""
         self._ensure_data_dir()
         if not os.path.exists(self.filepath):
-            self._write_expenses([])
+            self._write_data({"version": self.VERSION, "expenses": []})
     
     def load_expenses(self) -> List[Expense]:
         """
@@ -53,9 +55,17 @@ class ExpenseStorage:
         try:
             with open(self.filepath, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                
+            
+            # Handle both old format (list) and new format (dict with version)
+            if isinstance(data, list):
+                # Old format: convert to new format
+                expense_list = data
+            else:
+                # New format: extract expenses list
+                expense_list = data.get("expenses", [])
+            
             # Convert dictionaries to Expense objects
-            expenses = [Expense.from_dict(item) for item in data]
+            expenses = [Expense.from_dict(item) for item in expense_list]
             return expenses
             
         except json.JSONDecodeError as e:
@@ -96,7 +106,7 @@ class ExpenseStorage:
     
     def _write_expenses(self, expenses: List[Expense]):
         """
-        Write expenses to JSON file.
+        Write expenses to JSON file with version.
         
         Args:
             expenses: List of Expense objects to write
@@ -106,14 +116,35 @@ class ExpenseStorage:
         """
         try:
             # Convert Expense objects to dictionaries
-            data = [expense.to_dict() for expense in expenses]
+            expense_list = [expense.to_dict() for expense in expenses]
             
-            # Write to file with pretty formatting
-            with open(self.filepath, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+            # Create data structure with version
+            data = {
+                "version": self.VERSION,
+                "expenses": expense_list
+            }
+            
+            # Write to file
+            self._write_data(data)
                 
         except Exception as e:
             raise Exception(f"Error writing expenses: {e}")
+    
+    def _write_data(self, data: dict):
+        """
+        Write data to JSON file.
+        
+        Args:
+            data: Dictionary to write
+            
+        Raises:
+            Exception: If file cannot be written
+        """
+        try:
+            with open(self.filepath, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            raise Exception(f"Error writing to file: {e}")
     
     def delete_expense(self, expense_id: str) -> bool:
         """
