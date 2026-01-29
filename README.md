@@ -47,6 +47,43 @@ expense-tracker/
 cd expense-tracker
 ```
 
+## Arguments
+- --date (optional): Date in YYYY-MM-DD format (default: today)
+- --category (required): Category name (e.g., food, transport, rent)
+- --amount (required): Amount (must be positive number)
+- --note (optional): Description or note
+- --currency (optional): Currency code (default: BDT)
+
+## Usage
+
+### Add Expense
+```
+   python3 -m tracker add --category food --amount 250.5 --note "Lunch"
+
+   python3 -m tracker add --date 2026-01-26 --category transport --amount 80
+```
+
+### List Expenses
+```
+   python3 -m tracker list
+
+   python3 -m tracker list --month 2026-01 --category food
+
+   python3 -m tracker list --sort amount --desc --limit 10
+```
+
+### Summary
+```
+   python3 -m tracker summary
+   python3 -m tracker summary --month 2026-01
+   python3 -m tracker summary --from 2026-01-01 --to 2026-01-31
+```
+
+###  Edit/Delete
+```
+   python3 -m tracker edit --id EXP-20260126-0001 --amount 300
+   python3 -m tracker delete --id EXP-20260126-0001
+```
 
 
 
