@@ -85,9 +85,68 @@ cd expense-tracker
    python3 -m tracker delete --id EXP-20260126-0001
 ```
 
+### Data Format
+```
+    {
+    "version": 1,
+    "expenses": [
+        {
+        "id": "EXP-20260126-102345",
+        "date": "2026-01-26",
+        "category": "food",
+        "amount": 250.5,
+        "currency": "BDT",
+        "note": "Lunch",
+        "created_at": "2026-01-26T10:23:45"
+        }
+    ]
+    }
+```
 
+### Validation
 
+- Date: YYYY-MM-DD format
+- Amount: Must be > 0
+- Category: Required, non-empty string
+- ID: Auto-generated (EXP-YYYYMMDD-HHMMSS)
 
+### Examples
+```
+    # Add expenses
+    python3 -m tracker add --date 2026-01-25 --category transport --amount 80 --note "Rickshaw"
+    python3 -m tracker add --category food --amount 250.5 --note "Lunch"
+    python3 -m tracker add --category rent --amount 400 --note "Room rent"
+
+    # View all
+    python3 -m tracker list
+
+    # Monthly summary
+    python3 -m tracker summary --month 2026-01
+```
+
+### Output
+```
+    ============================================================
+    EXPENSE SUMMARY
+    ============================================================
+    Total Expenses: 3
+    Grand Total: 730.50 BDT
+
+    By Category:
+    ------------------------------------------------------------
+    Food                     250.50 BDT
+    Rent                     400.00 BDT
+    Transport                 80.00 BDT
+    ============================================================
+```
+
+**Need help?** Check the logs at `logs/tracker.log` or run commands with `--help`:
+```
+python3 -m tracker --help
+python3 -m tracker add --help
+python3 -m tracker list --help
+python3 -m tracker summary --help
+```
 
 
 
